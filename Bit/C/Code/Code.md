@@ -322,13 +322,6 @@ int main()
 
 
 
-
-
-
-
-
-
-
 // 利用qsort排序
 #define  _CRT_SECURE_NO_WARNINGS	
 #include<stdio.h>
