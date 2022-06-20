@@ -1,4 +1,4 @@
-# 01
+# D1
 
 
 
@@ -118,7 +118,7 @@
     > // 是连接
     > ```
 
-# 02
+# D2
 
 1. > ![image-20220619163322865](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206191633920.png)
 
@@ -207,11 +207,11 @@
    >   // 1
    >   if(b1 & (num++))；
    >    System.out.println(num);  // num = 11
-   >     
+   >       
    >   // 2 
    >   if(b1 && (num++));
    >   System.out.println(num);  // num = 10
-   >     
+   >       
    >   // 这就是逻辑与和短路与的区别，短路与&&，当左边为假时，右边就不参与运算
    >   ```
    >
@@ -233,3 +233,89 @@
     >   ![image-20220619222938578](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206192241192.png)
     >
     >   ![image-20220619223249095](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206192232121.png)
+
+# D3
+
+1. > ![image-20220620064640834](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206200646883.png)
+
+2. > ```java
+   > // 1. 
+   > int num;   // 声明
+   > num = 20;  // 初始化
+   > 
+   > // 2. 
+   > int num = 10; // 声明 + 初始化
+   > ```
+
+3. > ```java
+   > // 1. 一维数组的声明和初始化
+   > 
+   > // 1.1 静态初始化：数组的初始化和数组元素的赋值操作同时进行
+   > int[] ids;      // 声明
+   > ids = new int[]{1,2,3,4};
+   > 
+   > int[] ids = {1,2,3}; // 也是可以，这叫类型推断，前面的int[]不能省
+   > 
+   > // 1.2 动态初始化：数组的初始化和数组元素的赋值操作分开进行
+   > String[] names = new String[3];  // 3是元素个数
+   > 
+   > // 错误写法
+   > int[] arr1 = new int[];
+   > int[5] arr2 = new int[];
+   > int[] arr3 = new int[3]{12,2,3,4};
+   > 
+   > // 总结
+   > // 数组一旦初始化，其长度就确定了		
+   > ```
+   >
+   > ![image-20220620070435929](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206200704963.png)
+
+4. > 数组的初始化
+   >
+   > * boolean 在内存中，false是用0充当，true是用1充当
+   >
+   > * null表示空值，没有数值
+   >
+   > * ```java
+   >   boolean[] arr4 = new boolean[]{ture, false};
+   >   // 这种方式也属于静态初始化，但是一开始初始化为false，后面用{true，false}
+   >   // 给覆盖掉了
+   >   ```
+   >
+   >   
+   >
+   > ![image-20220620072126965](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206200721001.png)
+   >
+   > ![image-20220620073321148](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206200733185.png)
+
+5. > ![image-20220620073743757](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206200737797.png)
+
+6. > 数组的内存解析
+   >
+   > ```java
+   > int[] arr;
+   > arr = new[]{1,2,3};
+   > // 内存
+   > // 先在栈区开辟一个arr的变量空间，后再堆区创建一个数组存放{1, 2, 3}
+   > // 最后把堆区开辟数组的首元素的地址赋给arr
+   > ```
+   >
+   > ![image-20220620074837100](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206200748130.png)
+
+7. > * ctrl + d 选中后删除
+   > * ctrl + shift + f 选中后调整
+
+8. > 二维数组
+   >
+   > * ```java
+   >   // 静态初始化
+   >   int[][] arr = {{1,2,3},{13}};  // 自动类型推导
+   >   ```
+   >
+   > * 二维数组可以看成是其元素是一维数组，所以其长度是一位数组的个数
+
+9. > ![image-20220620082409497](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206200824540.png)
+   >
+   > ![image-20220620082551733](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206200825769.png)
+
+10. > ![image-20220620132206793](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206201322852.png)
