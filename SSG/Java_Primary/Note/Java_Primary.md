@@ -207,11 +207,11 @@
    >   // 1
    >   if(b1 & (num++))；
    >    System.out.println(num);  // num = 11
-   >       
+   >         
    >   // 2 
    >   if(b1 && (num++));
    >   System.out.println(num);  // num = 10
-   >       
+   >         
    >   // 这就是逻辑与和短路与的区别，短路与&&，当左边为假时，右边就不参与运算
    >   ```
    >
@@ -319,3 +319,7 @@
    > ![image-20220620082551733](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206200825769.png)
 
 10. > ![image-20220620132206793](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206201322852.png)
+
+ # D4
+
+1. > ![image-20220620192859886](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206201930862.png)
