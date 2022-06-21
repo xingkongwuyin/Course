@@ -205,11 +205,11 @@
    >   // 1
    >   if(b1 & (num++))；
    >    System.out.println(num);  // num = 11
-   >             
+   >               
    >   // 2 
    >   if(b1 && (num++));
    >   System.out.println(num);  // num = 10
-   >             
+   >               
    >   // 这就是逻辑与和短路与的区别，短路与&&，当左边为假时，右边就不参与运算
    >   ```
    >
@@ -759,53 +759,141 @@
     >
     >   + 多态的使用：
     >
-    >     （1）当调用子父类同名参数的方法时，实际执行的是子类重写父类的方法（虚拟方法调用）
+    >     （1）当调用子父类同名参数的方法时，实际执行的是子类重写父类的方法（虚拟方法调用）。且在内存中，man和Person的属性都会被加载，但这块内存是Person 类型，p1的
+    >     
+    >     （2）有了对象的多态后，内存中实际上加载了子类特有的属性和方法，但是由于变量声明为父类类型，导致编译时，只能调用父类的属性和方法，子类特有的属性和方法不能调（编译看左边）
     >
     >   ```java
     >    Person p1 = new man();   //   man是Person的子类   左边是父类的声明，
     >                             //                      右边是子类的对象
+    >                             //   因为new的是man，所以本质上p1是man
     >    Person p1 = new woman(); //   woman是Person的子类
     >   ```
     >
     > * 多态的使用：虚拟方法的调用
     >
-    >   + 有了对象的多态性后，我么在编译期，只能调用父类声明的结构，但在运行期，我们实际执行的是子类重写父类的方法。编译看左边，运行看右边
+    >   + 有了对象的多态性后，我么在编译期，只能调用父类声明的结构，但在运行期，我们实际执行的是子类重写父类的方法，不能调用子类特有的方法。编译看左边，运行看右边
     >
     > * 多态性的使用前提：
     >
     >   + 类的继承关系
     >   + 要有方法的重写
     >
-    > * 对象的多态性，只是用方法，不适用于属性。编译和玉兴都看左边。当创建父类对象指向子类时，在内存空间，属性是加载了子类和父类所有的属性，包括重名的（父类的属性不被覆盖），而方法，只有重写的==方法是否只有重写的，我不确定，是否还有父类没有被重写的==。多态是运行时的行为，不是编译时的行为。
+    > * 对象的多态性，只是用方法，不适用于属性。编译和运行都看左边。当创建父类对象指向子类时，在内存空间，属性是加载了子类和父类所有的属性，包括重名的（父类的属性不被覆盖），而方法，只有重写的==方法是否只有重写的，我不确定，是否还有父类没有被重写的，应该是可以调父类所有的方法和属性==。多态是运行时的行为，不是编译时的行为。
+    >
+    > 
+    >
+    > * 如何才能调用子类特有的属性和方法
+    >
+    >   * 向下转型，使用强制类型转换
+    >   * 使用强转时，可能出现ClassCastException的异常
+    >
+    >   ```java
+    >   // 向下转型，使用强制类型转换
+    >   Man m1 = (man) P1;
+    >   
+    >   // 使用强转时，可能出现ClassCastException的异常
+    >   Woman = (woman)P1; // woman不是man的子类，所以会出现异常
+    >   
+    >   // 在使用强制类型转换时，可以使用intance关键字去判断下，如果有子父
+    >   // 类的关系，可以去转
+    >   if(p2 instance of woman){
+    >       woman w1 = (woman)p2;
+    >   }
+    >   
+    >   ```
     >
     >   
     >
     >   ![image-20220621214201090](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206212142127.png)
     >
-    >   
+    > 
     >
     >   ![image-20220621215152270](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206212151302.png)
     >
-    >   
+    > 
     >
-    >   
+    > 
     >
     >   ![image-20220621215308369](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206212153404.png)
     >
-    >   
+    > 
     >
     >   ![image-20220621220856847](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206212208884.png)
     >
-    >   
+    > 
     >
-    >   
+    > 
     >
     >   ![image-20220621215518235](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206212155272.png)
     >
-    >   
+    > 
     >
-    >   
+    > 
     >
     >   ![image-20220621215656628](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206212156660.png)
     >
     > 
+    >
+    > ![image-20220622062649242](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206220626292.png)
+    >
+    > 
+    >
+    > ![image-20220622064020517](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206220640555.png)
+    >
+    > ![image-20220622063415122](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206220634165.png)
+    >
+    > 
+    >
+    > 
+    >
+    > ![image-20220622064504533](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206220645562.png)
+
+19. > ==Object==
+    >
+    > * Object只声明了空间构造器
+    >
+    > * ==
+    >
+    >   + 可以使用在基本数据类型和引用数据类型变量中
+    >   + 如果可以比较的是基本是基本数据类型变量,比较两个变量保存的数据是否相等(不一定类型相等,因为可能==时,发生强制类型转换).如果比较的是引用数据类型,则比较的是二者的地址是否相等,即两个引用是否指向同一个对象实体
+    >
+    > * equals
+    >
+    >   + 是一个方法,而非运算符
+    >
+    >   + ==类是引用数据类型==,只适用于引用数据类型
+    >
+    >   + Object类中定义的equals()和==的作用相同
+    >
+    >   + 像String Date File 包装类等都重写了Object类中equals()的方法,重写以后 ,比较的不是两个引用的地址是否相同,而是比较两个对象的"实体内容"(属性),是否相同
+    >
+    >     重写的原则.比较两个对象的实体内容是否相同
+    >
+    >   ![image-20220622065951772](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206220659817.png)
+    >
+    >   ![image-20220622072143518](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206220721562.png)
+    >
+    > * toString
+    >
+    >   * 当我们输出一个对象的引用时,实际上就是调用当前对象的toString()
+    >
+    >     ```java
+    >     Customer cust1 = new Customer("Tom",21);
+    >     System.out.println(cust1.toString()); // 地址
+    >     System.out.println(cust1);            // 地址  两个效果一致
+    >     ```
+    >
+    >   * 像toString Date file 包装类等都重写了Object类中的toString方法,使得在调用对象的toString()时,返回的"实际内容的信息"
+    >
+    >     
+    >
+    >     ![image-20220622073042929](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206220730978.png)
+
+20. > ==单元测试引用,没有看,在p303,讲的是测试方法,后面正式学习时,可以看一下这部分的内容==
+
+21. > ==包装类==
+    >
+    > * number这类也属于Object
+    >
+    >   ![image-20220622074403610](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202206220745448.png)
