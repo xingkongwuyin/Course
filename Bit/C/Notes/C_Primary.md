@@ -1093,52 +1093,135 @@ for (;L<=mid+3,R>=mid;L++,R--)
 
 5. 指针相关的题
 
+   * sizeof和strlen
+     + strlen是求字符串长度，关注的是字符串中的\0,计算的是\0之前出现的字符个数
+     + strlen是库函数，只针对字符串
+     + sizeof只关注内存空间的大小
+     + sizeof是操作符
+
    * 一维数组
 
-     ```java
+     ```C
      int a[] = {1,2,3,4};
-     // 1) size(数组名),数组名代表整个数组，计算的是整个数组的大小，单位是字节  16
+     //  size(数组名),数组名代表整个数组，计算的是整个数组的大小，单位是字节  16
      printf("%d\n",sizeof(a));
-     // 2) a代表首元素的地址，加几就代表偏移几，最终算的是地址的大小             4/8; 在这里 a == &a[0],取首元素的地址
+     
+     //  a代表首元素的地址，加几就代表偏移几，最终算的是地址的大小             4/8; 在这里 a == &a[0],取首元素的地址
      printf("%d\n",sizeof(a+0));
-     // 3) *a取出首元素，计算的首元素的大小，即数据类型的大小，这里是int，所以是  4
+     
+     //  *a取出首元素，计算的首元素的大小，即数据类型的大小，这里是int，所以是  4
      //    a == &a[0] *a == *&a[0] *a == a[0] *&从某个角度来讲，可以抵消
      printf("%d\n",sizeof(*a));
-     // 4) 跟2)相似,但地址进行偏移1，
+     
+     //  地址进行偏移1，
      printf("%d\n",sizeof(a+1));
+     
      printf("%d\n",sizeof(a[1]));
+     
+     // &a,取出的是数组的地址，即int(*)[4]，但地址的大小不是4就是8
      printf("%d\n",sizeof(&a));
+     
+     // 对数组的地址，进行解引用，返回的是整个数组，所以返回16
      printf("%d\n",sizeof(*&a));
+     
+     // 对数组的地址偏移1，得到的还是一个地址，不过是地址加16，返回4或者8
      printf("%d\n",sizeof(&a+1));
+     
+     // 取出第一个元素的地址
      printf("%d\n",sizeof(&a[0]));
+     
+     // 取出第一个元素的地址后偏移1
      printf("%d\n",sizeof(&a[0]+1));
      ```
 
-     
+   * 字符数组
 
-   * ```java
-     int a[] = {1,2,3,4};
-     // 1) size(数组名),数组名代表整个数组，计算的是整个数组的大小，单位是字节
-     printf("%d\n", sizeof(a));      // 16
-     // 2) a代表首元素的地址，加几就代表偏移几
-     printf("%d\n",sizeof(a + 0));   // 4
-     // 3)
-     printf("%d\n",sizeof(*a));      // 
+     ```C
+     char arr[] = {'a','b','c','d','e','f'};
+     // 6 
+     printf("%d\n", sizeof(arr));
      
-     int a[] = {1,2,3,4};
-     printf("%d\n",sizeof(a));
-     printf("%d\n",sizeof(a+0));
-     printf("%d\n",sizeof(*a));
-     printf("%d\n",sizeof(a+1));
-     printf("%d\n",sizeof(a[1]));
-     printf("%d\n",sizeof(&a));
-     printf("%d\n",sizeof(*&a));
-     printf("%d\n",sizeof(&a+1));
-     printf("%d\n",sizeof(&a[0]));
-     printf("%d\n",sizeof(&a[0]+1));
+     // 4/8
+     printf("%d\n", sizeof(arr+0));
+     
+     // 1 *arr-->*(arr + 0) -->arr[0]
+     printf("%d\n", sizeof(*arr));
+     
+     // 1
+     printf("%d\n", sizeof(arr[1]));
+     
+     // 4/8
+     printf("%d\n", sizeof(&arr));
+     
+     // 4/8
+     printf("%d\n", sizeof(&arr+1));
+     
+     // 4/8 
+     printf("%d\n", sizeof(&arr[0]+1));
+     
+     // strlen求字符串的长度，以\0结尾
+     // strlen从arr地址开始找，直达找到\0结尾
+     // 随机值
+     printf("%d\n", strlen(arr));
+     
+     // 随机值
+     printf("%d\n", strlen(arr+0));
+     
+     // strlen函数的形参是地址，所以传给strlen函数的数值默认是地址，这里传的是'a'的Acill码值97，97成了野指针，
+     // 不能随便访问，非法访问，程序报错
+     printf("%d\n", strlen(*arr));
+     
+     // 野指针，非法访问
+     printf("%d\n", strlen(arr[1]));
+     
+     // 取出数组的地址，传给strlen，转成char*，随机值
+     printf("%d\n", strlen(&arr));
+     
+     // 随机值减6, 也存在越界访问，不是那么危险，有时就不会报错
+     printf("%d\n", strlen(&arr + 1));
+     
+     // 随机值减1
+     printf("%d\n", strlen(&arr[0] + 1));
+     
+     
+     char *p = "abcdef";
+     // 7
+     printf("%d\n", sizeof(p));
+     // 4 /8 首元素地址加1，还是地址 
+     printf("%d\n", sizeof(p+1));
+     // 1
+     printf("%d\n", sizeof(*p));
+     // 1
+     printf("%d\n", sizeof(p[0]));
+     // 4/8
+     printf("%d\n", sizeof(&p));
+     // 4/8 取出数组的地址
+     printf("%d\n", sizeof(&p+1));
+     // 4/8 取出首元素的地址加1
+     printf("%d\n", sizeof(&p[0]+1));
+     // 6
+     printf("%d\n", strlen(p));
+     // 5
+     printf("%d\n", strlen(p+1));
+     // 随机值
+     printf("%d\n", strlen(*p));
+     // 随机值
+     printf("%d\n", strlen(p[0]));
+     // 6
+     printf("%d\n", strlen(&p));
+     // 0
+     printf("%d\n", strlen(&p+1));
+     // 5
+     printf("%d\n", strlen(&p[0]+1));
+     
+     
      ```
 
-     
+     ![image-20220713124729918](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207131247968.png)
+
+   
+
+   
 
 
 
