@@ -1448,7 +1448,7 @@ for (;L<=mid+3,R>=mid;L++,R--)
      {
      int x;
      int y;
-     }p1; //声明类型的同时定义变量p1，且初始化，在这里就没有初始化，那就系统默认初始化
+     }p1; 
      
      struct Point p2; //定义结构体变量p2
      //初始化：定义变量的同时赋初值。
@@ -1476,7 +1476,7 @@ for (;L<=mid+3,R>=mid;L++,R--)
      int x;
      int y;
      }p1; //声明类型的同时定义变量p1，且初始化
-     // p1的初始化只能在这里，不能被修改
+     // p1的初始化只能在这里，不能被修改，针对字符数组，自定义变量    正常
      // 即p1在上面没有初始化，后面就不能p1 = {1， 2}
      ```
    
@@ -1636,7 +1636,7 @@ for (;L<=mid+3,R>=mid;L++,R--)
 
      ![image-20220715211655548](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207152116629.png)
 
-3. ==枚举==
+3. **==枚举==**
 
    * 枚举的定义
 
@@ -1693,19 +1693,393 @@ for (;L<=mid+3,R>=mid;L++,R--)
           + define定义的常量在预处理阶段，会把代码中的该常量全部调换成定义的数字或者字符之类，而枚举类型不会，在调试的时候还可以观察到·
        5. 使用方便，一次可以定义多个常量
 
+## 7.12
+
+1. **==联合体（共用体）==**
+
+   * 定义：
+
+     + 联合也是一种特殊的自定义类型
+       这种类型定义的变量也包含一系列的成员，特征是这些成员共用同一块空间（所以联合也叫共用体）。
+
+       ```C
+       //联合类型的声明
+       union Un
+       {
+       char c;
+       int i;
+       };
+       //联合变量的定义
+       union Un un;
+       //计算连个变量的大小
+       printf("%d\n", sizeof(un)); 4
+       ```
+
+   * 特点
+
+     * 联合的成员是共用同一块内存空间的，这样一个联合变量的大小，至少是最大成员的大小（因为联合至少得有能力保存最大的那个成员）。
+
+     * 联合体体中有多个变量时，不会同时用，一次只能用一个
+
+       ![image-20220716151953938](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207161519004.png)
+
+   * 大小的计算
+
+     + 联合的大小至少是最大成员的大小。
+
+     + 当最大成员大小不是最大对齐数的整数倍的时候，就要对齐到最大对齐数的最小整数倍。
+
+     + 结构体的最小整数倍是要大于等于所有成员变量的大小和；而联合体的最小整数倍，只要大于等于所占空间最大的成员变量的大小即可，因为他们是共用的。
+
+     + ==结构体和联合体都存在对齐==
+
+       ```C
+       // 数组的对齐数，不是整个数组大小，而是其数据类型的大小
+       // char[]的对齐数就是1
+       union Un1
+       {
+       char c[5];// 相当于char c1 char c2 char c3 char c4 
+       int i;    // char c5(这两种写法不等价，便于理解),所以              对齐数不能按数组的大小来算
+       };
+       union Un2
+       {
+       short c[7];
+       int i;
+       };
+       //下面输出的结果是什么？
+       printf("%d\n", sizeof(union Un1)); // 8
+       printf("%d\n", sizeof(union Un2)); // 16
+       ```
+
+
+
+## 动态内存管理
+
+1.  ==为什么存在动态内存分配==
+
+   + 空间开辟大小是固定的。
+   + 数组在申明的时候，必须指定数组的长度，它所需要的内存在编译时分配。
+     但是对于空间的需求，不仅仅是上述的情况。有时候我们需要的空间大小在程序运行的时候才能知道，
+     那数组的编译时开辟空间的方式就不能满足了。
+     这时候就只能试试动态存开辟了。
+
+2. ==动态内存函数的介绍==
+
+   + malloc
+
+     ```c
+     void* malloc (size_t size);
+     ```
+
+     + 这个函数向内存申请一块连续可用的空间，并返回指向这块空间的指针
+
+     + 这个函数向内存申请一块连续可用的空间，并返回指向这块空间的指针。
+     + 如果开辟成功，则返回一个指向开辟好空间的指针。
+       如果开辟失败，则返回一个NULL指针，因此malloc的返回值一定要做检查。
+     + 返回值的类型是void* ，所以malloc函数并不知道开辟空间的类型，具体在使用的时候使用者自己
+       来决定。
+     + 如果参数size 为0，malloc的行为是标准是未定义的，取决于编译器。
+
+     ```c
+     #define _CRT_SECURE_NO_WARNINGS
+     #include<stdio.h>
+   #include<stddef.h>
+     #include<string.h>
+     #include<errno.h>  // errno
+     #include<stdlib.h> //malloc
+     
+     
+     int main() {
+     	
+     	int arr[10] = { 0 };
+     	// 动态内存分配,在堆区开辟空间
+     	int* p = (int*)malloc(sizeof(arr) + 40); // 这里加的是字节数，下面p[i]赋值时，
+     	// 动态分配内存必须先判空一下            // 因为是int，也就最大到p[10],指针
+     	if (p == NULL) {                         // +1，实际加的数要看数据类型
+     		printf("%s\n", strerror(errno));
+     		return 1;                // 在c语言中，返回0是正常返回
+     	}
+     	// 使用
+     	int i = 0;
+     	for (int i = 0; i < 20; i++) {
+     		p[i] = i;
+     		printf("%d\n", p[i]);
+     	}
+     	free(p);    // 这里释放空间，并不是指改变原本地址中数据，只是
+     	p = NULL;   // 告诉系统着段空间不在使用，但p中的地址还是没有
+     	            // 发生变化，这是p就成了野指针，所以需要置空
+     	        
+     	// 没有free，不意味着内存空间就不回收了、
+     	// 当程序退出的时候，系统会自动回收
+     	// 内存泄漏是指，申请了内存空间，
+     	// 用完没有还回去，别人想用也不能用
+     
+     
+     	return 0;
+     }
+     ```
+     
+     ![image-20220716164141971](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207161641086.png)
+     
+   + free
+
+     ```c
+     void free (void* ptr);
+     ```
+
+     + free函数用来释放动态开辟的内存。
+       如果参数ptr 指向的空间不是动态开辟的，那free函数的行为是未定义的。
+       如果参数ptr 是NULL指针，则函数什么事都不做。
+       malloc和free都声明在stdlib.h 头文件中。
+     + free释放的必须是动态开辟的内存，如果释放一般的指针指向的空间会报错
+     + free(null),不会报错。什么事都不会发生
+
+   + others
+
+     + 变长数组，更加准确应该是变量数组，即arr[N],N是个变量。c99标准支持
+     + ![image-20220716165308725](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207161704246.png)
+
+   + calloc
+
+     ```c
+     void* calloc (size_t num, size_t size);
+     ```
+
+     + 函数的功能是为num 个大小为size 的元素开辟一块空间，并且把空间的每个字节初始化为0。
+     + 与函数malloc 的区别只在于calloc 会在返回地址之前把申请的空间的每个字节初始化为全0。
+
+   + realloc
+
+     ```c
+     void* realloc (void* ptr, size_t size);
+     ```
+
+     + realloc函数的出现让动态内存管理更加灵活。
+       有时会我们发现过去申请的空间太小了，有时候我们又会觉得申请的空间过大了，那为了合理的时候内存，我们一定会对内存的大小做灵活的调整。那realloc 函数就可以做到对动态开辟内存大小的调整。
+
+     + ptr 是要调整的内存地址
+       size 调整之后新大小
+       返回值为调整之后的内存起始位置。
+       这个函数调整原内存空间大小的基础上，还会将原来内存中的数据移动到新的空间。
+
+     + realloc在调整内存空间的是存在两种情况：
+
+       情况1：原有空间之后有足够大的空间,就直接在后面开辟后面的空间
+
+       情况2：原有空间之后没有足够大的空间，那就在其他位置开辟一段看空间，
+
+       ​             且将原有的数据拷贝进去，返回新地址，把就空间释放掉
+
+       ![image-20220716172229415](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207161722474.png)
+
+     + ```C
+       p1 = realloc(p1, 4); // 不能对p1重新申请空间，然后用p1来接收，因为
+                            //  因为申请可能失败，返回空，那么p1原本指的空间
+                            //  就会找不到，这样很危险
+       ```
+
+     + ```C
+       // realloc可以实现和malloc一样的功能,realloc里面传的是NULL
+       realloc(NULL, 40) == malloc(40)
+       ```
+
+3.  **==常见的内存错误==**
+
+    * 对NULL指针的解引用操作
+
+      ```C
+      void test()
+      {
+          int *p = (int *)malloc(INT_MAX/4);
+          *p = 20;//如果p的值是NULL，就会有问题
+          free(p);
+      }
+      //  解决办法就是一定要提前判空，即
+      if(p == NULL){
+          peintf("%s\n", strerror(errno));
+          return 1;
+      }
+      ```
+
+    * 对动态开辟空间的越界访问
+
+      ```c
+      void test()
+      {
+          int i = 0;
+          int *p = (int *)malloc(10*sizeof(int));
+          if(NULL == p)
+          {
+              exit(EXIT_FAILURE);
+          }
+          for(i=0; i<=10; i++)
+          {
+              *(p+i) = i;//当i是10的时候越界访问
+          }
+          free(p);
+          p = NULL;
+      }
+      ```
+
+    * 对非动态开辟内存使用free释放
+
+      ```c
+      void test()
+      {
+          int a = 10;
+          int *p = &a;
+          free(p);//ok?
+      }
+      ```
+
+    * 使用free释放一块动态开辟内存的一部分
+
+      ```c
+      void test()
+      {
+          int *p = (int *)malloc(100);
+          p++;
+          free(p);// p不再指向动态内存的起始位置,
+      }           // 不能释放一部分
+      
+      ```
+
+    * 对同一块动态内存多次释放
+
+      ```C
+      void test()
+      {
+          int *p = (int *)malloc(100);
+          free(p);
+          free(p);//重复释放
+      }
+      ```
+
+    * 动态开辟内存忘记释放（内存泄漏）
+
+      ```c
+      //第一种情况
+      void test()
+      {
+          int *p = (int *)malloc(100);
+          if(NULL != p)
+          {
+              *p = 20;
+          }
+      }
+      int main()
+      {
+          test();
+          while(1);
+      }
+      
+      // 第二种情况
+      int* test() {
+      	int* p = (int*)malloc(100);
+      	if (p == NULL) {
+      		return 1;
+      	}
+      	return p;
+      }
+      
+      int main() {
+      	
+      	int* p1 = test();
+      	// 忘记释放内存
+      	// 应该做到谁调用，谁释放
+      	return 0;
+      }
+      ```
+
+    * **==解决办法：在编写程序时，一定看有几个malloc，后面就要有几个free，在程序的最后一定要检查！！！==**
+
+
+
+4. **==几个经典的笔试题==**
+
+   * ```C
+     void GetMemory(char *p)
+     {
+         p = (char *)malloc(100); // (2)
+     }
+     void Test(void)
+     {
+         char *str = NULL;
+         GetMemory(str);          // (1)
+         strcpy(str, "hello world");// (3)
+         printf(str);
+     }
+     // (1),是传址调用，只是穿进去str指针的一份拷贝
+     // (2),因为(1)的原因，函数结束，p销毁，但没有释放内存空间导致内存泄漏
+     // (3),对NULL指针进行解引用，系统会崩溃，因为NULL所指向的空间是不能被
+     // 使用的
+     
+     // 解决
+     void GetMemory(char **p)
+     {
+         *p = (char *)malloc(100); 
+     }
+     void Test(void)
+     {
+         char *str = NULL;
+         GetMemory(&str);          
+         strcpy(str, "hello world");
+         printf(str);
+         free(str);
+         str = NULL;
+     }
+     
+     // others
+     printf("hello world\n"); // 传给printf是'h'的地址，不是整个字符串
+     char *p = "hello world";
+     printf(p); 
+     printf("%s", p);         // 也可以这样写
+     
+     ```
+
+   * ```c
+     char *GetMemory(void)
+     {
+         char p[] = "hello world";
+         return p;
+     }
+     void Test(void)
+     {
+         char *str = NULL;
+         str = GetMemory();
+         printf(str);
+     }
+     ```
+
+     
+
    
 
 
 
 
 
+​        
 
 
 
 
 
 
+## 7.16
 
+
+
+* struct stu s；这种样子开辟的空间是不包括柔性数组的，必须动态分配内存，malloc（sizeof（struct stu） + 40），40预期柔性数组的大小
+* 柔性体现：如果开辟的空间不够，可以recolloc，重新开辟空间
+
+* 柔性数组在结构体只能存在一个
+
++ 流就是输入、输出缓存区
++ 写文件的时候可以以文本形式写入，也可以以二进制形式写入
++ ![image-20220716113212913](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207161132963.png)
+
++ ![image-20220716113909594](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207161139650.png)
 
 
 
