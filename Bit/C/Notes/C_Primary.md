@@ -1328,7 +1328,9 @@ for (;L<=mid+3,R>=mid;L++,R--)
      
      ![image-20220713222017238](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207132220310.png)
 
+## 7.3
 
+1. ====
 
 
 
@@ -2000,6 +2002,7 @@ for (;L<=mid+3,R>=mid;L++,R--)
    * ```C
      void GetMemory(char *p)
      {
+         // 栈空间的地址
          p = (char *)malloc(100); // (2)
      }
      void Test(void)
@@ -2035,12 +2038,14 @@ for (;L<=mid+3,R>=mid;L++,R--)
      printf(p); 
      printf("%s", p);         // 也可以这样写
      
-     ```
-
+   ```
+     
    * ```c
      char *GetMemory(void)
      {
-         char p[] = "hello world";
+         // 返回栈空间的问题
+         char p[] = "hello world"; // (1)
+         int a = 10;               // (2)
          return p;
      }
      void Test(void)
@@ -2048,10 +2053,69 @@ for (;L<=mid+3,R>=mid;L++,R--)
          char *str = NULL;
          str = GetMemory();
          printf(str);
+   }
+     int main(){
+         Test();
      }
+     // (1)，当调用GetMemory,就会开辟一个空间放"hello world"
+     // 当调用结束，这个空间就会释放掉，返回只是一个地址，也就是
+     // 结束后，系统用不用这个空间是不确定的
+     // 我们一般返回int 或者 char，虽然也在调用的时候开辟空间，
+     // 但是返回的时候，是将数值放在寄存器中返回的
+     // str就成了野指针
+     // (2),为变量创建的空间也会销毁，一般返回的是return a，这个a的值
+     // 是放在寄存器里面返回的
+     ```
+     
+   * ```C
+     void GetMemory(char **p, int num)
+     {
+         *p = (char *)malloc(num);
+     }
+     void Test(void)
+     {
+         char *str = NULL;
+         GetMemory(&str, 100);   // (1)
+         strcpy(str, "hello");
+         printf(str);
+     }
+     // (1), 可以打印，但是会存在内存泄漏
      ```
 
-     
+   * ```C
+     void Test(void)
+     {
+         char *str = (char *) malloc(100);
+         strcpy(str, "hello");
+         free(str);  // (1)
+         if(str != NULL)
+         {
+             strcpy(str, "world");
+             printf(str);
+         }
+     }
+     // (1), 提前释放，导致str成了野指针
+     ```
+
+   
+
+5. **==C/C++程序的内存开辟==**
+
+   * 栈区（stack）：在执行函数时，函数内局部变量的存储单元都可以在栈上创建，函数执行结
+     束时这些存储单元自动被释放。栈内存分配运算内置于处理器的指令集中，效率很高，但是
+     分配的内存容量有限。 栈区主要存放运行函数而分配的局部变量、函数参数、返回数据、返
+     回地址等。
+
+     堆区（heap）：一般由程序员分配释放， 若程序员不释放，程序结束时可能由OS回收 。分
+     配方式类似于链表。
+
+     数据段（静态区）（static）存放全局变量、静态数据。程序结束后由系统释放。
+
+     代码段：存放函数体（类成员函数和全局函数）的二进制代码。
+
+     ![image-20220716231334240](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207162313308.png)
+
+   
 
    
 
@@ -2085,15 +2149,50 @@ for (;L<=mid+3,R>=mid;L++,R--)
 
 
 
+* feof判断文件读取结束的原因，是文件读取失败结束还是遇
 
 
 
+## 7.17
 
+1. ==程序的翻译环境和执行环境==
 
+   + 翻译环境
 
+     + 链接库：自己写的函数和库函数
+     + 组成一个程序的每个源文件通过编译过程分别转换成目标代码（object code）。
+       每个目标文件由链接器（linker）捆绑在一起，形成一个单一而完整的可执行程序。
+       链接器同时也会引入标准C函数库中任何被该程序所用到的函数，而且它可以搜索程序员个人
+       的程序库，将其需要的函数也链接到程序中。
 
+     ![image-20220717141056602](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207171410680.png)
 
+   + 编译和链接的大体流程
 
+     ![image-20220717141226562](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207171412650.png)
+
+     ![image-20220717141435284](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207171414403.png)
+
+   + 运行环境
+     + 程序必须载入内存中。在有操作系统的环境中：一般这个由操作系统完成。在独立的环境中，程序的载入必须由手工安排，也可能是通过可执行代码置入只读内存来完成。
+     + 程序的执行便开始。接着便调用main函数。
+     + 开始执行程序代码。这个时候程序将使用一个运行时堆栈（stack），存储函数的局部变量和返回地址。程序同时也可以使用静态（static）内存，存储于静态内存中的变量在程序的整个执行过程一直保留他们的值。
+     4. 终止程序。正常终止main函数；也有可能是意外终止。
+
+2. 预处理详解
+
+   + #define
+
+     + ```c
+       // 如果定义的 stuff过长，可以分成几行写，除了最后一行外，每行的后面都加一个反斜杠(续行符)。
+       // 也使用程序当中，\转义的是换行符(\n),因为换的时候敲了换行符
+       #define DEBUG_PRINT printf("file:%s\tline:%d\t \
+       date:%s\ttime:%s\n" ,\
+       __FILE__,__LINE__ , \
+       __DATE__,__TIME__ )
+       ```
+
+       
 
 
 
