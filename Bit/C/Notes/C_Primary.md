@@ -1393,69 +1393,335 @@ for (;L<=mid+3,R>=mid;L++,R--)
 
 2. **==strcpy==**
 
+   + 定义
+   
+     + ![image-20220717204620087](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207181422676.png)
+   
+     + ```C
+       char* my_strcpy(char* dest, const char* src) {
+       	assert(dest, src);
+    	char* ret = dest;
+       	while (*dest++ == *src++);  // ++的优先级比*的优先级高
+    	return rt;
+       }
+       ```
+   
    + 注意
-     + 要保证原字符串中要有\0,因为拷贝的时候是以\0结束的
-     + 拷贝时，会把原字符中的\0也拷贝进去
+  + 要保证原字符串中要有\0,因为拷贝的时候是以\0结束的
+     
+  + 拷贝时，会把原字符中的\0也拷贝进去
+     
      + 源字符串必须以'\0' 结束。
+     
      + 会将源字符串中的'\0' 拷贝到目标空间。
+     
      + 目标空间必须足够大，以确保能存放源字符串
+     
      + 目标空间必须可变，例如，目标空间放的常量字符串，这个就复制其他值。目标区域必须可以被修改
-
-   ![image-20220717204620087](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207172046160.png)
-
-   ```C
-   char name[20];
-   name = "afhda"; // 不可以复制，name是个地址，是个常量值
-   ```
-
-   ![image-20220717205024311](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207172050373.png)
-
-   ![image-20220717205657973](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207172056064.png)
-
-
+     
+     + ```C
+       char name[20];
+       name = "afhda"; // 不可以复制，name是个地址，是个常量值
+       ```
+     
+   + others
+   
+     + ![image-20220717205024311](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207181421509.png)
+     + ![image-20220717205657973](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207181422751.png)
+   
 
 3. **==strcat==**
 
-   ![image-20220717210039889](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207172100963.png)
+   + 定义
 
-   + 源字符串必须以'\0' 结束。
-   + 目标空间必须有足够的大，能容纳下源字符串的内容。
-   + 目标空间必须可修改。
-   + 如果字符串中含有\0,则遇到这个\0停止
+     + ![image-20220717210039889](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207181433685.png)
+
+     + 模拟实现
+
+       ```C
+       char* my_strcat(char* dest, const char* src) {
+       	assert(dest && src);
+       	char* ret = dest;
+       	while (*dest) {
+       		dest++;
+       	}
+       	while (*dest++ = *src++);
+       	return ret;
+       }
+       ```
+
+   + 注意
+     + 源字符串必须以'\0' 结束。
+     + 目标空间必须有足够的大，能容纳下源字符串的内容。
+     + 目标空间必须可修改。
+     + 如果字符串中含有\0,则遇到这个\0停止
+
+   
 
    ![image-20220717211217166](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207172112215.png)
 
-4. ==strcmp==
+4. **==strcmp==**
 
-   * This function starts comparing the first character of each string. If they are equal to each other, it continues with the following pairs until the characters differ or until a terminating null-character is reached.
+   + 定义
 
-   * 标准规定：
-     第一个字符串大于第二个字符串，则返回大于0的数字
-     第一个字符串等于第二个字符串，则返回0
-     第一个字符串小于第二个字符串，则返回小于0的数字
-
-   * ```C
+     ```C
      int strcmp ( const char * str1, const char * str2 );
      ```
 
+     + This function starts comparing the first character of each string. If they are equal to each other, it continues with the following pairs until the characters differ or until a terminating null-character is reached.
+
+     + 标准规定：
+       第一个字符串大于第二个字符串，则返回大于0的数字
+       第一个字符串等于第二个字符串，则返回0
+       第一个字符串小于第二个字符串，则返回小于0的数字
+
    
-![image-20220717214934771](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207172149832.png)
-   
-strncat: 追加3，就会追加源字符串三个，再带一个\0。如果追加的数目大于原来字符串的长度，那么追加的是所有的源字符串的字符再加一个\0\
 
-c语言的库函数，在执行失败的时候，都会设置错误码
+   * 模拟实现
+     
+     ```C
+     int my_strcmp(const char* s1, const char* s2) {
+     	assert(s1 && s2);
+     	while (*s1 == *s2) {
+     		if (*s1) {
+     			return 0;
+     		}
+     		s1++;
+     		s2++;
+     	}
+     	return *s1 - *s2;
+     }
+     ```
 
-errno 是一个c语言设置的一个全局的错误码存放的变量，只要C语言发生错误，就会把错误码保存到errno中，如果有多个错误，记录最新的一个，把老的错误码覆盖掉，也就是随着程序的运行，errno里面的错误码可能会发生变化
+5. **==strncpy==**
 
-只有大写大写字母字符，tolower才会转，其他的字符不会发生变化
+   + 定义
 
-memcpy： num是指要拷贝的字节
+     + ```C
+       char * strncpy ( char * destination, const char * source, size_t num );
+       ```
 
-memcpy函数是不用来处理重叠内存之间的数据之间的数据拷贝的
+       Copies the first num characters of source to destination. If the end of the source C string (which is signaled by a null-character) is found before num characters have been copied, destination is padded with zeros until a total of num characters have been written to it.
 
-memmove是用来实现重叠内存之间的数据拷贝的
+   + 注意
 
-void*的指针不能直接解引用
+     + 拷贝num个字符从源字符串到目标空间。
+     + 如果源字符串的长度小于num，则拷贝完源字符串之后，在目标的后边追加0，直到num个。
+
+   + others
+
+     + ![image-20220717214934771](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207181459005.png)
+
+6. ==**strncpy**==
+
+   * 定义
+
+     ```C
+     char * strncat ( char * destination, const char * source, size_t num );
+     ```
+
+     拷贝num个字符从源字符串到目标空间。
+     如果源字符串的长度小于num，则拷贝完源字符串之后，在目标的后边追加0，直到num个。
+
+7. ==strncat==
+
+   + 定义
+
+     ```C
+     char * strncat ( char * destination, const char * source, size_t num );
+     ```
+
+     Appends the first num characters of source to destination, plus a terminating null-character.
+
+   + 注意
+
+     + If the length of the C string in source is less than num, only the content up to the terminating null-character is copied.
+     + 追加3，就会追加源字符串三个，再带一个\0。如果追加的数目大于原来字符串的长度，那么追加的是所有的源字符串的字符再加一个\0，实际字符个数为num + 1，如果目标空间不够，就会产生越界
+
+8. **==strncmp==**
+
+   + 定义
+
+     ```C
+     int strncmp ( const char * str1, const char * str2, size_t num );
+     ```
+
+   + 注意
+
+     + 比较到出现另个字符不一样或者一个字符串结束或者num个字符全部比较完。
+     + ![image-20220718151412236](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207181514297.png)
+
+9. **==strstr==**
+
+   + 定义
+
+     ```C
+     char * strstr ( const char *str1, const char * str2);
+     ```
+
+     Returns a pointer to the first occurrence of str2 in str1, or a null pointer if str2 is not part of str1.
+
+   + 模拟实现
+
+     ```C
+     char* my_strstr(const char* str1, const char* str2) {
+     	const char* p = str1;
+     	const char* s1 = str1;
+     	const char* s2 = str2;
+     	while (*p) {
+     		s1 = p;
+     		s2 = str2;
+     		while (*s1 && *s2 && *s1 == *s2) {
+     			s1++;
+     			s2++;
+     		}
+     		if (!*s2) {
+     			return (char*)p;
+     		}
+     		if (!*s1) {
+     			return NULL;
+     		}
+     		p++;
+     	}
+     	return NULL;
+     }
+     ```
+
+10. **==strtok==**
+
+    + 定义
+
+      ```C
+      char * strtok ( char * str, const char * sep );
+      // 形参中，如果指针是没有带有const修饰的（在最前面），
+      // 那么实参最好不能是常量字符串的地址，因为这个操作的字符串可能被改变
+      // sep:如果是个字符串，记住分割的字符集合带有'\0',即，“sfa”,其实分割符是包括\0的
+      ```
+
+    + 注意
+
+      + sep参数是个字符串，定义了用作分隔符的字符集合
+      + 第一个参数指定一个字符串，它包含了0个或者多个由sep字符串中一个或者多个分隔符分割的标记。
+      + strtok函数找到str中的下一个标记，并将其用\0 结尾，返回一个指向这个标记的指针。（注：strtok函数会改变被操作的字符串，所以在使用strtok函数切分的字符串一般都是临时拷贝的内容并且可修改。）
+      + strtok函数的第一个参数不为NULL ，函数将找到str中第一个标记，strtok函数将保存它在字符串中的位置。
+      + strtok函数的第一个参数为NULL ，函数将在同一个字符串中被保存的位置开始，查找下一个标记。
+      + 如果字符串中不存在更多的标记，则返回NULL 指针。
+
+    
+
+11. **==strerror==**
+
+    * 定义
+
+      ```C
+      char * strerror ( int errnum );
+      // 返回错误码，所对应的信息
+      // errno 是一个c语言设置的一个全局的错误码存放的变量，只要C语言发生错误，就会把错误码保存到errno中，如果有多个错误，记录最新的一个，把老的错误码覆盖掉，也就是随着程序的运行，errno里面的错误码可能会发生变化
+      ```
+
+    * others
+
+      ![image-20220718163026866](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207181630938.png)
+
+12. **==memcopy==**
+
+    * 定义
+
+      ```C
+      void * memcpy ( void * destination, const void * source, size_t num );
+      // num是字节数
+      ```
+
+    * 注意
+
+      * 函数memcpy从source的位置开始向后复制num个字节的数据到destination的内存位置
+      * 这个函数在遇到'\0' 的时候并不会停下来。
+      * 如果source和destination有任何的重叠，复制的结果都是未定义的。
+
+    * 模拟实现
+
+      ```C
+      void* my_memcpy(void* des, const void* src, size_t num) {
+      	assert(des && src);
+      	char* d = (char*)des;
+      	char* s = (char*)src;
+      	while (num--) {
+      		*d++ = *s++;
+      	}
+      	return des;
+      }
+      ```
+
+      
+
+13. **==memmove==**
+
+    * 定义
+
+      ```C
+      void * memmove ( void * destination, const void * source, size_t num );
+      ```
+
+    * 注意
+
+      + 和memcpy的差别就是memmove函数处理的源内存块和目标内存块是可以重叠的。
+      + 如果源空间和目标空间出现重叠，就得使用memmove函数处理。
+
+    * 模拟实现
+
+      ```C
+      void* my_memmove(void* des, const void* src, size_t num) {
+      	assert(des && src);
+      	char* d = (char*) des;
+      	char* s = (char*)src;
+      	if (s > d) {
+      		while (num--) {
+      			*d++ = *s++;
+      		}
+      	}
+      	else {
+      		while (num--) {
+      			*(d + num) = *(s + num);
+      		}
+      	}
+      	return des;
+      }
+      ```
+
+      
+
+14. **==memcmp==**
+
+    + 定义
+
+      ```C
+      int memcmp ( const void * ptr1,
+      const void * ptr2,
+      size_t num );
+      ```
+
+    + 注意
+
+      + 比较从ptr1和ptr2指针开始的num个字节
+      + ![image-20220718164032288](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207181640353.png)
+
+    + others
+
+      + void*的指针不能直接解引用
+
+15. **==memset==**
+
+    + 定义
+
+      ```C
+      // void *memset(void *str, int c, size_t n) 复制字符 C（一个无符号字符）到参数 str所指向的字符串的前n个字符。
+      void *memset(void *str, int c, size_t n)
+      ```
+
+      + **str** -- 指向要填充的内存块。
+      + **c** -- 要被设置的值。该值以 int 形式传递，但是函数在填充内存块时是使用该值的无符号字符形式。
+      + **n** -- 要被设置为该值的字符数。
+      + 该值返回一个指向存储区 str 的指针。
 
 ## 7.10
 
@@ -1696,10 +1962,36 @@ void*的指针不能直接解引用
 
        ![image-20220715193309232](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207151933271.png)
 
+       + 模拟实现
+     
+         ```C
+       #define offsetof(type, name) (size_t)&(((type*)0)->name)
+         struct stu {
+         	char c;
+         	int i;
+         };
+         #define myoffsetof(type, name)  (size_t)&(((type*)0) -> i) // (1)
+         
+         int main() {
+         
+         
+         	printf("%d\n", myoffsetof(struct stu, c));
+         	printf("%p\n", &(struct stu)); // 会报错，这个数据类型是没有地址的
+         	return 0;
+         }
+         // (1),只能将0地址处假设是struct stu类型的地址，然后应该是编译的时候，会为他的成员变量分配地址，这只是假设，因为0地址处的是不能被解引用
+         ```
+     
+         ![image-20220718194929361](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207181949446.png)
+     
+         ![image-20220718200043717](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207182000788.png)
+     
      + ![image-20220715194057059](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207151940129.png)
+     
      + ==大小端是指的字节地址的顺序，即低位字节放在低地址，而在字节内部，就不是大小端的问题，不过从测试来看右边是低位，左边是高位。地址是按字节分的。一个字节就没有大小端问题了。==
+     
      + ![image-20220715205353267](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207152053320.png)
-
+     
      
 
 2. **==位段==**
@@ -1880,7 +2172,7 @@ void*的指针不能直接解引用
 
 ## 动态内存管理
 
-1.  ==为什么存在动态内存分配==
+1.  **==为什么存在动态内存分配==**
 
    + 空间开辟大小是固定的。
    + 数组在申明的时候，必须指定数组的长度，它所需要的内存在编译时分配。
@@ -1888,7 +2180,7 @@ void*的指针不能直接解引用
      那数组的编译时开辟空间的方式就不能满足了。
      这时候就只能试试动态存开辟了。
 
-2. ==动态内存函数的介绍==
+2. **==动态内存函数的介绍==**
 
    + malloc
 
@@ -1946,7 +2238,7 @@ void*的指针不能直接解引用
      
      ![image-20220716164141971](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207161641086.png)
      
-   + free
+   + **free**
 
      ```c
      void free (void* ptr);
@@ -1964,7 +2256,7 @@ void*的指针不能直接解引用
      + 变长数组，更加准确应该是变量数组，即arr[N],N是个变量。c99标准支持
      + ![image-20220716165308725](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207161704246.png)
 
-   + calloc
+   + **calloc**
 
      ```c
      void* calloc (size_t num, size_t size);
@@ -1973,7 +2265,7 @@ void*的指针不能直接解引用
      + 函数的功能是为num 个大小为size 的元素开辟一块空间，并且把空间的每个字节初始化为0。
      + 与函数malloc 的区别只在于calloc 会在返回地址之前把申请的空间的每个字节初始化为全0。
 
-   + realloc
+   + **realloc**
 
      ```c
      void* realloc (void* ptr, size_t size);
@@ -2162,36 +2454,35 @@ void*的指针不能直接解引用
      printf("%s", p);         // 也可以这样写
      
      ```
-   ```
      
-   * ```c
-     char *GetMemory(void)
-     {
-         // 返回栈空间的问题
-         char p[] = "hello world"; // (1)
-         int a = 10;               // (2)
-         return p;
-     }
-     void Test(void)
-     {
-         char *str = NULL;
-         str = GetMemory();
-         printf(str);
-   }
-     int main(){
-         Test();
-     }
-     // (1)，当调用GetMemory,就会开辟一个空间放"hello world"
-     // 当调用结束，这个空间就会释放掉，返回只是一个地址，也就是
-     // 结束后，系统用不用这个空间是不确定的
-     // 我们一般返回int 或者 char，虽然也在调用的时候开辟空间，
-     // 但是返回的时候，是将数值放在寄存器中返回的
-     // str就成了野指针
-     // (2),为变量创建的空间也会销毁，一般返回的是return a，这个a的值
-     // 是放在寄存器里面返回的
-   ```
-
    * ```C
+       
+       char *GetMemory(void)
+       {
+           // 返回栈空间的问题
+           char p[] = "hello world"; // (1)
+           int a = 10;               // (2)
+           return p;
+       }
+       void Test(void)
+       {
+           char *str = NULL;
+           str = GetMemory();
+           printf(str);
+     }
+       int main(){
+           Test();
+       }
+       // (1)，当调用GetMemory,就会开辟一个空间放"hello world"
+       // 当调用结束，这个空间就会释放掉，返回只是一个地址，也就是
+       // 结束后，系统用不用这个空间是不确定的
+       // 我们一般返回int 或者 char，虽然也在调用的时候开辟空间，
+       // 但是返回的时候，是将数值放在寄存器中返回的
+       // str就成了野指针
+       // (2),为变量创建的空间也会销毁，一般返回的是return a，这个a的值
+       // 是放在寄存器里面返回的                                                                                              
+     ```
+* ```C
      void GetMemory(char **p, int num)
      {
          *p = (char *)malloc(num);
@@ -2205,8 +2496,8 @@ void*的指针不能直接解引用
      }
      // (1), 可以打印，但是会存在内存泄漏
      ```
-
-   * ```C
+   
+* ```C
      void Test(void)
      {
          char *str = (char *) malloc(100);
@@ -2220,9 +2511,9 @@ void*的指针不能直接解引用
      }
      // (1), 提前释放，导致str成了野指针
      ```
-
    
 
+   
 5. **==C/C++程序的内存开辟==**
 
    * 栈区（stack）：在执行函数时，函数内局部变量的存储单元都可以在栈上创建，函数执行结
@@ -2240,6 +2531,86 @@ void*的指针不能直接解引用
      ![image-20220716231334240](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207162313308.png)
 
    
+
+6. **==柔性数组==**
+
+   + 定义
+
+     也许你从来没有听说过柔性数组（flexible array）这个概念，但是它确实是存在的。
+     C99 中，结构中的最后一个元素允许是未知大小的数组，这就叫做柔性数组成员。且柔性数组只能存在一个。
+
+     ```C
+     typedef struct st_type
+     {
+     int i;
+     int a[];//柔性数组成员
+     }type_a;
+     ```
+
+   + 特点
+
+     + 结构中的柔性数组成员前面必须至少一个其他成员。
+     + sizeof 返回的这种结构大小不包括柔性数组的内存。
+     + 包含柔性数组成员的结构用malloc ()函数进行内存的动态分配，并且分配的内存应该大于结构的大小，以适应柔性数组的预期大小。
+
+   + 使用和优势
+
+     ```C
+     struct stu{
+         int name;
+     	int arr[];
+     };
+     struct stu s; // 对于含有柔性数组的结构体，一般不这么创建结构体变量
+                   // 具体创建看下图
+     ```
+
+     ```C
+     
+     struct stu {
+     	
+     	char i;
+     	int a[];
+     };
+     
+     int main() {
+     
+     	
+     	struct stu* p = (struct stu*)malloc(sizeof(struct stu) + 40);
+     	if (p == NULL) {
+     		return 1;
+     	}
+     	p->i = 100;
+     	for (int i = 0; i < 10; i++) {
+     		p->a[i] = i;
+     	}
+     	 
+     	// r柔性的体现，可以重新开辟内存
+     	struct stu* p1 = (struct stu*)realloc(p,sizeof(struct stu) + 40);
+     	if (p1 == NULL) {
+     		return 1;
+     	}
+     	p1 = p;
+     	
+     	printf("%c\n", p1->i);
+     	free(p);
+     	p = NULL;
+     	p1 = NULL;
+     	
+     	return 0;
+     }
+     ```
+
+     ![image-20220718210751965](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207182107046.png)
+
+     ![image-20220718210800848](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207182108919.png)
+
+     ![image-20220718213123846](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207182131929.png)
+
+     + 地址 - 地址 得出还是元素个数，且处在类型转换，比如int的地址减去char的地址，char的地址会转变成int的地址
+
+     
+
+     
 
 
 ## 7.16
@@ -2304,11 +2675,163 @@ void*的指针不能直接解引用
        __DATE__,__TIME__ )
        ```
 
+   + #define
+
+     + define定义标识符
+
+       + 在define定义标识符的时候，要不要在最后加上`;`
+
+         ```C
+         #define MAX 100; // 错误，define定义的，只是在预编译阶段原封不动的替换
+         #define Max
+         ```
+
+     + define定义宏
+
+       + 定义
+
+         #define 机制包括了一个规定，允许把参数替换到文本中，这种实现通常称为宏（macro）或定义宏（define macro）。
+
+         ```C
+         // 声明方式
+         #define name( parament-list ) stuff
+         // 建议实际书写方式，将stuff整体包上括号，且将stuff中的
+         // 每个参数单独加上括号，例如，下
+         #define DOUBLE( x) ( ( x ) + ( x ) )
+         
+         ```
+
+       + #define的替换规则
+
+         + 在调用宏时，首先对参数进行检查，看看是否包含任何由#define定义的符号。如果是，它们首先
+           被替换。
+
+         + 替换文本随后被插入到程序中原来文本的位置。对于宏，参数名被他们的值所替换。
+
+         + 最后，再次对结果文件进行扫描，看看它是否包含任何由#define定义的符号。如果是，就重复上述处理过程。
+
+       + ```C
+         
+         ```
+
+         
+
+     + #和##
+
+       + ![image-20220718192825284](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207181928370.png)
+
+         ![image-20220718192851076](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207181928155.png)
+
+     + 宏和函数的一个对比
+
+       ![image-20220718192941378](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207181929456.png)
+
+     + 命名约定
+       + 宏名大写，函数不要全部大写
+       + 宏名也有例外，ofsetof就一个宏
+
+   + #undef
+
+     + 这条指令用于移除一个宏定义
+
+       ```C
+       #undef NAME
+       //如果现存的一个名字需要被重新定义，那么它的旧名字首先要被移除。
+       
+       #define MAX 1000
+        a = MAX;
+       #undef MAX // 将MAX给移除掉，所以下面就不能用MAX了
+       ```
+
+   + 命令行定义
+
+     + 许多C 的编译器提供了一种能力，允许在命令行中定义符号。用于启动编译过程。
+       例如：当我们根据同一个源文件要编译出不同的一个程序的不同版本的时候，这个特性有点用处。（假定某个程序中声明了一个某个长度的数组，如果机器内存有限，我们需要一个很小的数组，但是另外一个机器内存大写，我们需要一个数组能够大写。）
+
+       ```c
+       //linux 环境演示
+       gcc -D ARRAY_SIZE=10 programe.c
+       ```
+
+   + 条件编译
+
+     + 在编译一个程序的时候我们如果要将一条语句（一组语句）编译或者放弃是很方便的。因为我们有条件编译指令。比如说：调试性的代码，删除可惜，保留又碍事，所以我们可以选择性的编译。
+
+     + 常见的条件编译指令
+
+       ```C
+       1.
+       #if 常量表达式
+       //...
+       #endif
+       //常量表达式由预处理器求值。
+       如：
+       #define __DEBUG__ 1
+       #if __DEBUG__
+       //..
+       #endif
+       2.多个分支的条件编译
+       #if 常量表达式
+       //...
+       #elif 常量表达式
+       //...
+       #else
+       //...
+       #endif
+       3.判断是否被定义
+       #if defined(symbol)
+       #ifdef symbol
+       #if !defined(symbol)
+       #ifndef symbol
+       4.嵌套指令
+       #if defined(OS_UNIX)
+       #ifdef OPTION1
+       unix_version_option1();
+       #endif
+       #ifdef OPTION2
+       unix_version_option2();
+       #endif
+       #elif defined(OS_MSDOS)
+       #ifdef OPTION2
+       msdos_version_option2();
+       #endif
+       #endif
+       ```
+
+   + 文件包含
+
+     + #include 指令可以使另外一个文件被编译。就像它实际出现于#include 指令的地方
+       一样。这种替换的方式很简单：预处理器先删除这条指令，并用包含文件的内容替换。
+       这样一个源文件被包含10次，那就实际被编译10次。
+
+     + 嵌套文件包含
+
+       + 解决头文件重复包含的问题的两种方法，每个头文件的开头写
+
+         + 1）
+
+           ```C
+           #ifndef __TEST_H__
+           #define __TEST_H__
+           //头文件的内容
+           #endif // __TEST_H__
+           ```
+
+           
+
+         + 2）
+
+           ```C
+           #pragma once
+           ```
+
+           
+
+       ​	      
+
        
 
-
-
-
+       
 
 
 
