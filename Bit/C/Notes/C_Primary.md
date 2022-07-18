@@ -1330,9 +1330,132 @@ for (;L<=mid+3,R>=mid;L++,R--)
 
 ## 7.3
 
-1. ====
+1. **==strlen==**
+
+   ```C
+   size_t strlen ( const char * str );
+   ```
+
+   * 字符串已经'\0' 作为结束标志，strlen函数返回的是在字符串中'\0' 前面出现的字符个数（不包含'\0' )。
+
+   * 参数指向的字符串必须要以'\0' 结束。注意函数的返回值为size_t，是无符号的（ 易错）
+
+     ```C
+     #include <stdio.h>
+     int main()
+     {
+         const char*str1 = "abcdef";
+         const char*str2 = "bbb";
+         if(strlen(str2)-strlen(str1)>0)
+         {
+             printf("str2>str1\n"); // (1)
+         }
+         else
+         {
+             printf("srt1>str2\n");
+         }
+         return 0;
+     }
+     // (1), 因为strlen返回的是无符号整型，所以str2 - str1 > 0
+     // 会发生整型提升，str2 - str1的结果是无符号整型，肯定大于0
+     // 解决
+     // if(strlen(str1) > strlen(str2))
+     ```
+
+   * strlen模拟实现
+
+     ```C
+     // 计数器方式
+     size_t myStrlen1(const char* c) {
+     	if (c == NULL ) {
+     		return 0;
+     	}
+     	size_t n = 0;
+     	while (*c) {
+     		n++;
+     		c++;
+     	}
+     	return n;
+     }
+     // 指针-指针
+     // c指针指向字符串首地址，p指向'\0'的地址
+     size_t myStrlen2(const char* c) {
+     	if (c == NULL) {
+     		return 0;
+     	}
+     	char* p = c;
+     	while (*p) {
+     		p++;
+     	}
+     	return p - c;
+     }
+     ```
+
+2. **==strcpy==**
+
+   + 注意
+     + 要保证原字符串中要有\0,因为拷贝的时候是以\0结束的
+     + 拷贝时，会把原字符中的\0也拷贝进去
+     + 源字符串必须以'\0' 结束。
+     + 会将源字符串中的'\0' 拷贝到目标空间。
+     + 目标空间必须足够大，以确保能存放源字符串
+     + 目标空间必须可变，例如，目标空间放的常量字符串，这个就复制其他值。目标区域必须可以被修改
+
+   ![image-20220717204620087](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207172046160.png)
+
+   ```C
+   char name[20];
+   name = "afhda"; // 不可以复制，name是个地址，是个常量值
+   ```
+
+   ![image-20220717205024311](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207172050373.png)
+
+   ![image-20220717205657973](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207172056064.png)
 
 
+
+3. **==strcat==**
+
+   ![image-20220717210039889](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207172100963.png)
+
+   + 源字符串必须以'\0' 结束。
+   + 目标空间必须有足够的大，能容纳下源字符串的内容。
+   + 目标空间必须可修改。
+   + 如果字符串中含有\0,则遇到这个\0停止
+
+   ![image-20220717211217166](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207172112215.png)
+
+4. ==strcmp==
+
+   * This function starts comparing the first character of each string. If they are equal to each other, it continues with the following pairs until the characters differ or until a terminating null-character is reached.
+
+   * 标准规定：
+     第一个字符串大于第二个字符串，则返回大于0的数字
+     第一个字符串等于第二个字符串，则返回0
+     第一个字符串小于第二个字符串，则返回小于0的数字
+
+   * ```C
+     int strcmp ( const char * str1, const char * str2 );
+     ```
+
+   
+![image-20220717214934771](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207172149832.png)
+   
+strncat: 追加3，就会追加源字符串三个，再带一个\0。如果追加的数目大于原来字符串的长度，那么追加的是所有的源字符串的字符再加一个\0\
+
+c语言的库函数，在执行失败的时候，都会设置错误码
+
+errno 是一个c语言设置的一个全局的错误码存放的变量，只要C语言发生错误，就会把错误码保存到errno中，如果有多个错误，记录最新的一个，把老的错误码覆盖掉，也就是随着程序的运行，errno里面的错误码可能会发生变化
+
+只有大写大写字母字符，tolower才会转，其他的字符不会发生变化
+
+memcpy： num是指要拷贝的字节
+
+memcpy函数是不用来处理重叠内存之间的数据之间的数据拷贝的
+
+memmove是用来实现重叠内存之间的数据拷贝的
+
+void*的指针不能直接解引用
 
 ## 7.10
 
@@ -2038,6 +2161,7 @@ for (;L<=mid+3,R>=mid;L++,R--)
      printf(p); 
      printf("%s", p);         // 也可以这样写
      
+     ```
    ```
      
    * ```c
@@ -2065,8 +2189,8 @@ for (;L<=mid+3,R>=mid;L++,R--)
      // str就成了野指针
      // (2),为变量创建的空间也会销毁，一般返回的是return a，这个a的值
      // 是放在寄存器里面返回的
-     ```
-     
+   ```
+
    * ```C
      void GetMemory(char **p, int num)
      {
@@ -2116,18 +2240,6 @@ for (;L<=mid+3,R>=mid;L++,R--)
      ![image-20220716231334240](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207162313308.png)
 
    
-
-   
-
-
-
-
-
-​        
-
-
-
-
 
 
 ## 7.16
