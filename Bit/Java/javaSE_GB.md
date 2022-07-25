@@ -1,4 +1,4 @@
-# 初识java及数据类型_0724
+# 初识java及数据类型_0725
 
 1. ==path的作用==
 
@@ -13,4 +13,10 @@
 
      ，因为有的电脑，一重启JAVA_HOME，这个路径就失效了。
 
-   * 
+3. ==字节码文件（.class文件）是二进制文件。编译是把java文件变成字节码文件==
+
+   ![image-20220725154419745](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207251544802.png)
+
+4. ==文档注释==
+
+   ![image-20220724215050905](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207251613013.png)
