@@ -1400,35 +1400,43 @@ for (;L<=mid+3,R>=mid;L++,R--)
      + ```C
        char* my_strcpy(char* dest, const char* src) {
        	assert(dest, src);
-    	char* ret = dest;
-       	while (*dest++ == *src++);  // ++的优先级比*的优先级高
-    	return rt;
-       }
        ```
    
    + 注意
-  + 要保证原字符串中要有\0,因为拷贝的时候是以\0结束的
-     
-  + 拷贝时，会把原字符中的\0也拷贝进去
-     
-     + 源字符串必须以'\0' 结束。
-     
+   
+     + 要保证原字符串中要有\0,因为拷贝的时候是以\0结束的
+       + 拷贝时，会把原字符中的\0也拷贝进去
+       + 源字符串必须以'\0' 结束。
      + 会将源字符串中的'\0' 拷贝到目标空间。
-     
      + 目标空间必须足够大，以确保能存放源字符串
-     
      + 目标空间必须可变，例如，目标空间放的常量字符串，这个就复制其他值。目标区域必须可以被修改
-     
+   
+   + 模拟实现
+   
+     ```C
+     char* ret = dest;
+     	while (*dest++ == *src++);  // ++的优先级比*的优先级高
+     return rt;
+     }
+     ```
+   
+   + others
+   
      + ```C
        char name[20];
        name = "afhda"; // 不可以复制，name是个地址，是个常量值
        ```
-     
-   + others
    
-     + ![image-20220717205024311](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207181421509.png)
-     + ![image-20220717205657973](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207181422751.png)
+     + ![image-20220717205024311](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207190801778.png)
    
+     + ![image-20220717205657973](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207190801215.png)
+
+​     
+
+
+
+
+
 
 3. **==strcat==**
 
@@ -2511,9 +2519,9 @@ for (;L<=mid+3,R>=mid;L++,R--)
      }
      // (1), 提前释放，导致str成了野指针
      ```
-   
 
-   
+
+
 5. **==C/C++程序的内存开辟==**
 
    * 栈区（stack）：在执行函数时，函数内局部变量的存储单元都可以在栈上创建，函数执行结
