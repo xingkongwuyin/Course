@@ -13,7 +13,7 @@
 
      ，因为有的电脑，一重启JAVA_HOME，这个路径就失效了。
      
-   * classpath：印象笔记
+   * CLASSPATH（类路径）：印象笔记
 
 3. **==字节码文件（.class文件）是二进制文件。编译是把java文件变成字节码文件==**
 
@@ -22,3 +22,27 @@
 4. **==文档注释==**
 
    ![image-20220724215050905](https://dawn1314.oss-cn-beijing.aliyuncs.com/202207251613013.png)
+
+
+
+# 数据类型&运算符
+
+1. **==数据类型分类==**
+
+   * 基本数据类型
+
+     ![image-20220726103942181](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207261039212.png)
+
+   * 引用数据类型
+
+     数组、字符串、类、接口、枚举、String……
+
+2. **==变量的分类==**
+
+   * 局部变量：方法内部定义的变量
+   * 成员变量：类和对象中成员
+
+3. **==configuration==**
+
+   + ![image-20220726105712928](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207261057966.png)
+   + 如果在git管理的文件夹中建立project，那么IDEA会自动管理这个文件夹
