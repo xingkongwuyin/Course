@@ -42,7 +42,18 @@
    * 局部变量：方法内部定义的变量
    * 成员变量：类和对象中成员
 
-3. **==configuration==**
+3. **==变量初始化==**
+
+   + 变量在定义的时候可以不初始化，但是在使用的时候一定要初始化，不像C语言会默认初始化（随机值或者0）
+
+     ![image-20220726115331659](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207261153717.png)
+
+   * java里面是没有所谓的无符号和有符号这样的说法，既能保存正数也能保存负数，最高位为符号位，相当于整型、浮点型和字符型都是有符号的
+
+   
+
+4. **==configuration==**
 
    + ![image-20220726105712928](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207261057966.png)
    + 如果在git管理的文件夹中建立project，那么IDEA会自动管理这个文件夹
+   + ![image-20220726114548598](https://dawn1314.oss-cn-beijing.aliyuncs.com/typora202207261145665.png)
